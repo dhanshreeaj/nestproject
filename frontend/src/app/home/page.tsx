@@ -30,8 +30,10 @@ export default function Home() {
         <Typography>Home Page</Typography>
         <br />
 
-        <Link href="/payment">
-          <Button sx={{ bgcolor: "grey", color: "black" }}>Payment</Button>
+        <Link href="/payment" passHref>
+          <Button sx={{ bgcolor: "grey", color: "black" }}>
+            Go To Payment
+          </Button>
         </Link>
       </Box>
     </>

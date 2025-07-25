@@ -5,10 +5,13 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { sendVerificationEmail } from 'src/utils/verification';
 import { JwtService } from '@nestjs/jwt';
 import axios from 'axios';
+import { ConfigService } from '@nestjs/config';
+
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService,
-    private jwtService:JwtService,
+    private jwtService:JwtService,private configService: ConfigService,
+    
   ) {}
 
 //google sign
