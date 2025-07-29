@@ -12,8 +12,8 @@ export class PaymentService {
 
   constructor(private prisma:PrismaService,private configService: ConfigService) {
     this.razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID,
-      key_secret: process.env.RAZORPAY_KEY_SECRET,
+      key_id: this.configService.get<string>('RAZORPAY_KEY_ID'),
+      key_secret: this.configService.get<string>('RAZORPAY_KEY_SECRET'),
     });
   }
 
