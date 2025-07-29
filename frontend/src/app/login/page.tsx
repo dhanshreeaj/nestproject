@@ -27,8 +27,12 @@ export default function Login() {
       const { token, user } = response.data;
       localStorage.setItem("token", token);
       router.push("/home");
-    } catch (error: any) {
-      alert(error?.response?.data?.message || "Login failed.");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        alert(error?.response?.data?.message || "Login failed.");
+      } else {
+        alert("Login failed");
+      }
     }
   };
 
@@ -107,7 +111,7 @@ export default function Login() {
               Login with Goole
             </Button>
             <Typography variant="h6" fontSize={15} py={1}>
-              Don't have an account?
+              Don&apos;t have an account?
               <Link
                 href="/register"
                 style={{ textDecoration: "none", color: "black" }}

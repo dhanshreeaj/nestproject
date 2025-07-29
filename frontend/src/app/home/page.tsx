@@ -3,8 +3,9 @@
 import { Box, Button, Typography } from "@mui/material";
 import Link from "next/link";
 
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
+
 export default function Home() {
   const searchParams = useSearchParams();
 

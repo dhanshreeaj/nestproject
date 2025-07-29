@@ -1,9 +1,41 @@
 "use client";
 
-import { Box, Button, Paper, TextField, Typography } from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import Script from "next/script";
 import { useState } from "react";
+
+declare global {
+  interface Window {
+    Razorpay: new (options: RazorpayOptions) => RazorpayInstance;
+  }
+}
+
+interface RazorpayOptions {
+  key: string;
+  amount: number;
+  currency: string;
+  name: string;
+  description: string;
+  order_id: string;
+  handler: (response: {
+    razorpay_payment_id: string;
+    razorpay_order_id: string;
+    razorpay_signature: string;
+  }) => void;
+  prefill?: {
+    name: string;
+    email: string;
+    contact: string;
+  };
+  theme?: {
+    color: string;
+  };
+}
+
+interface RazorpayInstance {
+  open(): void;
+}
 
 export default function Payment() {
   const [form, setForm] = useState({
@@ -17,7 +49,7 @@ export default function Payment() {
     email: "",
   });
 
-  const handleChange = async (e: any) => {
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -60,7 +92,11 @@ export default function Payment() {
       name: "Stallion",
       description: "Test Transaction",
       order_id: order.id,
-      handler: async function (response: any) {
+      handler: async function (response: {
+        razorpay_payment_id: string;
+        razorpay_order_id: string;
+        razorpay_signature: string;
+      }) {
         try {
           alert("Payment successful: " + response.razorpay_payment_id);
         } catch (error) {
@@ -85,7 +121,7 @@ export default function Payment() {
       },
     };
 
-    const rzp = new (window as any).Razorpay(options);
+    const rzp = new window.Razorpay(options);
     rzp.open();
   };
   return (

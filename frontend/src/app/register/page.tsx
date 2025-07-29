@@ -32,8 +32,12 @@ export default function Register() {
       });
       setMessage(res.data.message);
       setStep(2);
-    } catch (err: any) {
-      setMessage(err.response?.data?.message || "Error occurred");
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        setMessage(err.response?.data?.message || "Error occurred");
+      } else {
+        setMessage("Unexpected error occurred");
+      }
     }
   };
 
@@ -48,8 +52,12 @@ export default function Register() {
       setTimeout(() => {
         router.push("/home");
       }, 1000);
-    } catch (err: any) {
-      setMessage(err.response?.data?.message || "Verification failed");
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        setMessage(err.response?.data?.message || "Verification failed");
+      } else {
+        setMessage("Unexpeted verification error");
+      }
     }
   };
 
