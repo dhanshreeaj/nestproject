@@ -30,3 +30,18 @@ model VerificationCode {
   expiresAt DateTime
   user      User     @relation(fields: [userId], references: [id])
 }
+
+model Order {
+  id                String   @id @default(cuid())
+  razorpayId        String
+  name              String
+  lastName          String
+  address1          String
+  city              String
+  postalCode        String
+  country           String
+  phone             String
+  email             String
+  shiprocketOrderId String?
+  createdAt         DateTime @default(now())
+}

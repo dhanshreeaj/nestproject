@@ -1,16 +1,3 @@
-// import  {Controller,Post,Body} from "@nestjs/common";
-// import { PaymentService } from "./payment.service";
-
-// @Controller('payment')
-// export class PaymentController{
-//     constructor(private readonly paymentSerivce:PaymentService){}
-
-//     @Post('create-order')
-//     async createOrder(@Body() body:{amount:number}){
-//         return this.paymentSerivce.createOrder(body.amount);
-//     }
-// }
-
 import { Controller, Post, Body,   Req,
   Res,
   HttpCode,
@@ -19,11 +6,14 @@ import { PaymentService } from './payment.service';
 
 import { Request, Response } from 'express';
 import * as crypto from 'crypto';
+import { CreateOrderDto } from 'src/dto/createorder';
 
 @Controller('payment')
 export class PaymentController {
-  constructor(private paymentService: PaymentService) {}
+  constructor(private paymentService: PaymentService,
+  ) {}
 
+  //payment
   @Post('create-order')
   async createOrder(@Body('amount') amount: number) {
     const order = await this.paymentService.createOrder(amount);
@@ -31,7 +21,7 @@ export class PaymentController {
   }
 
 
-
+//webhook
   @Post('webhook')
   @HttpCode(HttpStatus.OK)
   handleWebhook(@Req()  req:Request, @Res() res:Response){
@@ -52,5 +42,11 @@ export class PaymentController {
       console.warn('Invalid signature');
       return res.status(400).json({error:'Invalid signature'});
     }
+  }
+
+  //comfirm order
+  @Post('confirm-order')
+  async confirmOrder(@Body() dto:CreateOrderDto){
+    return this.paymentService.confirmOrder(dto);
   }
 }

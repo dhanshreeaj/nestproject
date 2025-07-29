@@ -1,11 +1,51 @@
 "use client";
 
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Paper, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import Script from "next/script";
+import { useState } from "react";
 
 export default function Payment() {
+  const [form, setForm] = useState({
+    name: "",
+    lastName: "",
+    address1: "",
+    city: "",
+    postalCode: "",
+    country: "",
+    phone: "",
+    email: "",
+  });
+
+  const handleChange = async (e: any) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  // async function confirmOrderAndDeliver() {
+  //   try {
+  //     await axios.post("http://localhost:3001/payment/confirm-order", {
+  //       // razorpayPaymentId: response.razorpay_payment_id,
+  //       razorpayPaymentId: "fake id",
+
+  //       address: form,
+  //     });
+  //     // alert("Payment successful: " + response.razorpay_payment_id);
+  //   } catch (error) {
+  //     if (axios.isAxiosError(error)) {
+  //       console.error(
+  //         "Shiprocket Order Failed",
+  //         error.response?.data || error.message
+  //       );
+  //     } else {
+  //       console.error("Unexpected error:", error);
+  //     }
+  //     alert("Payment succeeded but order creation failed");
+  //   }
+  // }
+
   const handlePayment = async () => {
+    //return confirmOrderAndDeliver();
+
     const { data: order } = await axios.post(
       "http://localhost:3001/payment/create-order",
       {
@@ -20,13 +60,25 @@ export default function Payment() {
       name: "Stallion",
       description: "Test Transaction",
       order_id: order.id,
-      handler: function (response: any) {
-        alert("Payment successful: " + response.razorpay_payment_id);
+      handler: async function (response: any) {
+        try {
+          alert("Payment successful: " + response.razorpay_payment_id);
+        } catch (error) {
+          if (axios.isAxiosError(error)) {
+            console.error(
+              "Shiprocket Order Failed",
+              error.response?.data || error.message
+            );
+          } else {
+            console.error("Unexpected error:", error);
+          }
+          alert("Payment succeeded but order creation failed");
+        }
       },
       prefill: {
-        name: "Dhanshree",
-        email: "user@example.com",
-        contact: "9999999999",
+        name: form.name,
+        email: form.email,
+        contact: form.phone,
       },
       theme: {
         color: "#3399cc",
@@ -49,7 +101,64 @@ export default function Payment() {
           py: 15,
         }}
       >
-        <Typography variant="h6">Make Payment</Typography>
+        <Typography variant="h6">Order Process</Typography>
+        <TextField
+          label="Name"
+          name="name"
+          value={form.name}
+          onChange={handleChange}
+        />
+        <TextField
+          label="Last Name"
+          name="lastName"
+          value={form.lastName}
+          onChange={handleChange}
+        />
+        <TextField
+          label="Address"
+          name="address1"
+          value={form.address1}
+          onChange={handleChange}
+        />
+        <TextField
+          label="City"
+          name="city"
+          value={form.city}
+          onChange={handleChange}
+        />
+        <TextField
+          label="Postal Code"
+          name="postalCode"
+          value={form.postalCode}
+          onChange={handleChange}
+        />
+        <TextField
+          label="Country"
+          name="country"
+          value={form.country}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              country:
+                e.target.value.trim().toLowerCase() === "india"
+                  ? "India"
+                  : e.target.value,
+            })
+          }
+        />
+        <TextField
+          label="Phone"
+          name="phone"
+          value={form.phone}
+          onChange={handleChange}
+        />
+        <TextField
+          label="Email"
+          name="email"
+          value={form.email}
+          onChange={handleChange}
+        />
+
         <Button
           sx={{ bgcolor: "grey", color: "black" }}
           onClick={handlePayment}

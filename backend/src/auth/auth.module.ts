@@ -6,6 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PaymentController } from 'src/payment/payment.controller';
 import { PaymentService } from 'src/payment/payment.service';
 import { ConfigModule } from '@nestjs/config';
+import { PaymentModule } from 'src/payment/payment.module';
 
 @Module({
   imports:[
@@ -16,8 +17,9 @@ import { ConfigModule } from '@nestjs/config';
       secret:'your_jwt_secret', 
       signOptions:{expiresIn:'7d'},
     }),
+    PaymentModule
   ],
-  controllers: [AuthController,PaymentController],
-  providers: [AuthService,PrismaService,PaymentService]
+  controllers: [AuthController],
+  providers: [AuthService,PrismaService]
 })
 export class AuthModule {}
