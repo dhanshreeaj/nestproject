@@ -21,24 +21,51 @@ interface User {
   email: string;
   isVerified: string;
 }
+interface Payment {
+  id: string;
+  razorpayOrderId: string;
+  razorpayPaymentId: string;
+  razorpaySignature: string;
+  email: string;
+  amount: number;
+  createdAt: string;
+}
 
 export default function AdminHome() {
   const [users, setUsers] = useState<User[]>([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
   const [showTable, setShowTable] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [editName, setEditName] = useState("");
   const [editEmail, setEditEmail] = useState("");
+  const [showUsers, setShowUsers] = useState(false);
+  const [showPayments, setShowPayments] = useState(false);
 
   const fetchUsers = async () => {
-    if (showTable) {
-      setShowTable(false);
+    setShowPayments(false);
+    if (showUsers) {
+      setShowUsers(false);
     } else {
       try {
         const res = await axios.get("http://localhost:3001/auth/users");
         setUsers(res.data);
-        setShowTable(true);
+        setShowUsers(true);
       } catch (err) {
         console.error("Error to fetching users:", err);
+      }
+    }
+  };
+  const fetchPayments = async () => {
+    setShowUsers(false);
+    if (showPayments) {
+      setShowPayments(false);
+    } else {
+      try {
+        const res = await axios.get("http://localhost:3001/auth/payments");
+        setPayments(res.data);
+        setShowPayments(true);
+      } catch (err) {
+        console.error("Error to fetching payments:", err);
       }
     }
   };
@@ -96,10 +123,11 @@ export default function AdminHome() {
             onClick={fetchUsers}
             sx={{ mb: 3, bgcolor: "black", color: "white" }}
           >
-            {showTable ? "Hide Users" : "View Users"}
+            {showUsers ? "Hide Users" : "View Users"}
           </Button>
+          <br />
 
-          {showTable && (
+          {showUsers && (
             <TableContainer
               component={Paper}
               // sx={{ bgcolor: "grey" }}
@@ -191,6 +219,52 @@ export default function AdminHome() {
                         >
                           Delete
                         </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+          <Button
+            variant="contained"
+            onClick={fetchPayments}
+            sx={{ mb: 3, bgcolor: "black", color: "white" }}
+          >
+            {showPayments ? "Hide payments" : "View Payments"}
+          </Button>
+
+          {showPayments && (
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>
+                      <strong>Order ID</strong>
+                    </TableCell>
+                    <TableCell>
+                      <strong>Payment ID</strong>
+                    </TableCell>
+                    <TableCell>
+                      <strong>Email</strong>
+                    </TableCell>
+                    <TableCell>
+                      <strong>Amount</strong>
+                    </TableCell>
+                    <TableCell>
+                      <strong>Date</strong>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {payments.map((payment) => (
+                    <TableRow key={payment.id}>
+                      <TableCell>{payment.razorpayOrderId}</TableCell>
+                      <TableCell>{payment.razorpayPaymentId}</TableCell>
+                      <TableCell>{payment.email}</TableCell>
+                      <TableCell>{payment.amount}</TableCell>
+                      <TableCell>
+                        {new Date(payment.createdAt).toLocaleString()}
                       </TableCell>
                     </TableRow>
                   ))}
