@@ -62,4 +62,8 @@ deleteUser(@Param('id') id: string) {
 updateUsers(@Param('id') id:string,@Body() data:Partial<User>){
   return this.authService.updateUser(id,data)}
 
+ @Get('payments')
+getAllPayments() {
+  return this.authService.getAllPayments();
+}
 }

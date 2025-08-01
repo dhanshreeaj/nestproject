@@ -26,9 +26,9 @@ model User {
 
 model VerificationCode {
   userId    String   @id
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   code      String
   expiresAt DateTime
-  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Order {

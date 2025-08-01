@@ -297,4 +297,19 @@ const params = new URLSearchParams(options);
     data,
   })
  }
+
+ //get payment details
+   async getAllPayments(){
+    return this.prisma.payment.findMany({
+      select:{
+        id:true,
+        razorpayOrderId:true,
+        razorpayPaymentId:true,
+       razorpaySignature:true,
+       email:true,
+       amount:true,
+       createdAt:true,
+      }
+    })
+  }
 }
