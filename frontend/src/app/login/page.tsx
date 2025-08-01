@@ -17,6 +17,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const [sent, setSent] = useState(false);
 
   const handlesubmit = async () => {
     try {
@@ -26,13 +27,28 @@ export default function Login() {
       });
       const { token, user } = response.data;
       localStorage.setItem("token", token);
-      router.push("/home");
+      if (user.type === "admin") {
+        router.push("/adminhome");
+      } else {
+        router.push("/home");
+      }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         alert(error?.response?.data?.message || "Login failed.");
       } else {
         alert("Login failed");
       }
+    }
+  };
+
+  const handleforgotpassword = async () => {
+    try {
+      await axios.post("http://localhost:3001/auth/forgotpassword", { email });
+      window.location.href = `http://localhost:3000/resetpassword?email=${encodeURIComponent(
+        email
+      )}`;
+    } catch (error) {
+      alert("Failed to send reset code");
     }
   };
 
@@ -79,9 +95,30 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <Typography variant="subtitle2" align="right">
+            {/* <Typography
+              variant="subtitle2"
+              align="right"
+              onClick={handleforgotpassword}
+            >
               Forgot Password?
-            </Typography>
+            </Typography> */}
+
+            <Button
+              fullWidth
+              variant="contained"
+              sx={{
+                mt: 2,
+                bgcolor: "black",
+              }}
+              onClick={handleforgotpassword}
+            >
+              Forgot Password?
+            </Button>
+            {sent && (
+              <Typography color="green">
+                Check your email for the reset code.
+              </Typography>
+            )}
             <Button
               fullWidth
               variant="contained"

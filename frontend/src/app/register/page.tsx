@@ -31,6 +31,7 @@ export default function Register() {
         password,
       });
       setMessage(res.data.message);
+      setCode("");
       setStep(2);
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
@@ -93,12 +94,14 @@ export default function Register() {
                 label="Full Name"
                 fullWidth
                 margin="normal"
+                value={name}
                 onChange={(e) => setName(e.target.value)}
               />
               <TextField
                 label="Email"
                 fullWidth
                 margin="normal"
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
               <TextField
@@ -106,6 +109,7 @@ export default function Register() {
                 type="password"
                 fullWidth
                 margin="normal"
+                value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
               <Button
@@ -123,6 +127,7 @@ export default function Register() {
                 label="Verification Code"
                 fullWidth
                 margin="normal"
+                value={code}
                 onChange={(e) => setCode(e.target.value)}
               />
               <Button
@@ -136,11 +141,11 @@ export default function Register() {
             </>
           )}
 
-          {message && (
+          {/* {message && (
             <Typography variant="body2" color="white" mt={2}>
               Email Already Register
             </Typography>
-          )}
+          )} */}
 
           {step === 1 && (
             <>

@@ -98,6 +98,15 @@ export default function Payment() {
         razorpay_signature: string;
       }) {
         try {
+          await axios.post("http://localhost:3001/payment/verify", {
+            razorpayPaymentId: response.razorpay_payment_id,
+            razorpayOrderId: response.razorpay_order_id,
+            razorpaySignature: response.razorpay_signature,
+            address: form,
+            amount: order.amount / 100,
+            email: form.email,
+          });
+
           alert("Payment successful: " + response.razorpay_payment_id);
         } catch (error) {
           if (axios.isAxiosError(error)) {
@@ -124,6 +133,7 @@ export default function Payment() {
     const rzp = new window.Razorpay(options);
     rzp.open();
   };
+
   return (
     <>
       <Script src="https://checkout.razorpay.com/v1/checkout.js" />

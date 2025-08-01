@@ -1,0 +1,205 @@
+"use client";
+import { useState } from "react";
+import {
+  Box,
+  Button,
+  Container,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
+import axios from "axios";
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  isVerified: string;
+}
+
+export default function AdminHome() {
+  const [users, setUsers] = useState<User[]>([]);
+  const [showTable, setShowTable] = useState(false);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+
+  const fetchUsers = async () => {
+    if (showTable) {
+      setShowTable(false);
+    } else {
+      try {
+        const res = await axios.get("http://localhost:3001/auth/users");
+        setUsers(res.data);
+        setShowTable(true);
+      } catch (err) {
+        console.error("Error to fetching users:", err);
+      }
+    }
+  };
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      if (!editingUser) return;
+      const response = await axios.patch(
+        `http://localhost:3001/auth/users/${editingUser.id}`,
+        {
+          name: editName,
+          email: editEmail,
+        }
+      );
+
+      setUsers((prev) =>
+        prev.map((u) => (u.id === editingUser.id ? response.data : u))
+      );
+      setEditingUser(null);
+    } catch (error) {
+      console.log("Update failed", error);
+    }
+  };
+
+  const handleDelete = async (userId: string) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:3001/auth/users/${userId}`
+      );
+      console.log("User deleted:", response.data);
+      setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      alert("Failed to delete user");
+    }
+  };
+  return (
+    <>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          py: 3,
+          px: 3,
+          gap: 3,
+        }}
+      >
+        <Container maxWidth="xl">
+          <Typography variant="h4" fontWeight="bold">
+            Admin Dashboard
+          </Typography>
+          <Button
+            variant="contained"
+            onClick={fetchUsers}
+            sx={{ mb: 3, bgcolor: "black", color: "white" }}
+          >
+            {showTable ? "Hide Users" : "View Users"}
+          </Button>
+
+          {showTable && (
+            <TableContainer
+              component={Paper}
+              // sx={{ bgcolor: "grey" }}
+            >
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>
+                      <strong>Name</strong>
+                    </TableCell>
+                    <TableCell>
+                      <strong>Email</strong>
+                    </TableCell>
+                    <TableCell>
+                      <strong>Verified</strong>
+                    </TableCell>
+                    <TableCell>
+                      <strong>Edit</strong>
+                    </TableCell>
+                    <TableCell>
+                      <strong>Delete</strong>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {users.map((user) => (
+                    <TableRow key={user.id}>
+                      <TableCell>{user.name}</TableCell>
+                      <TableCell>{user.email}</TableCell>
+                      <TableCell>
+                        {user.isVerified ? "Verified" : "Not Verified"}
+                      </TableCell>
+                      {/* Edit details */}
+                      <TableCell>
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          onClick={() => {
+                            setEditingUser(user);
+                            setEditName(user.name);
+                            setEditEmail(user.email);
+                          }}
+                        >
+                          Edit
+                        </Button>
+                        {editingUser && (
+                          <Paper sx={{ p: 2, mt: 2 }}>
+                            <Typography variant="h6" mb={2}>
+                              Edit User: {editingUser.name}
+                            </Typography>
+                            <form onSubmit={handleUpdate}>
+                              <input
+                                type="text"
+                                placeholder="Name"
+                                value={editName}
+                                onChange={(e) => setEditName(e.target.value)}
+                              />
+                              <input
+                                type="email"
+                                placeholder="Email"
+                                value={editEmail}
+                                onChange={(e) => setEditEmail(e.target.value)}
+                              />
+                              <Button
+                                type="submit"
+                                variant="contained"
+                                sx={{ ml: 2 }}
+                              >
+                                Update
+                              </Button>
+                              <Button
+                                variant="outlined"
+                                color="secondary"
+                                sx={{ ml: 2 }}
+                                onClick={() => setEditingUser(null)}
+                              >
+                                Cancel
+                              </Button>
+                            </form>
+                          </Paper>
+                        )}
+                      </TableCell>
+                      {/* Delete details */}
+                      <TableCell>
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          onClick={() => handleDelete(user.id)}
+                        >
+                          Delete
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </Container>
+      </Box>
+    </>
+  );
+}
