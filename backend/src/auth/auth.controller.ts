@@ -1,7 +1,8 @@
-import { Controller,Body,Post,Get,Req,UseGuards, Res, Query, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller,Body,Post,Get,Req,UseGuards, Res, Query, HttpException, HttpStatus, Param, Delete, Patch } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Response, } from 'express';
+import { User } from '@prisma/client';
 
 @Controller('auth')
 export class AuthController {
@@ -35,4 +36,30 @@ async googleCallback(@Query('code')code:string,@Res() res:Response){
   }
   return this.authService.handleGoogleCallback(code,res);
 }
+
+@Post('forgotpassword')
+forgotPassword(@Body () body: {email:string}){
+  return this.authService.forgotPassword(body.email);
+}
+
+@Post('resetpassword')
+resetPassword(@Body() body:{email:string;code:string;newPassword:string}){
+  return this.authService.resetPassword(body.email,body.code,body.newPassword);
+}
+
+
+@Get('users')
+getAllUsers() {
+  return this.authService.getAllUsers();
+}
+
+@Delete('users/:id')
+deleteUser(@Param('id') id: string) {
+  return this.authService.deleteUser(id);
+}
+
+@Patch('users/:id')
+updateUsers(@Param('id') id:string,@Body() data:Partial<User>){
+  return this.authService.updateUser(id,data)}
+
 }

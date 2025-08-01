@@ -45,3 +45,20 @@ model Order {
   shiprocketOrderId String?
   createdAt         DateTime @default(now())
 }
+
+model Admin {
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
+  password String
+}
+
+model Payment {
+  id                String   @id @default(uuid())
+  razorpayPaymentId String
+  razorpayOrderId   String
+  razorpaySignature String
+  email             String
+  amount            Int
+  createdAt         DateTime @default(now())
+}

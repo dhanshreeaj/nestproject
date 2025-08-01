@@ -60,6 +60,23 @@ private async getShiprocketToken(): Promise<string> {
     throw new Error('Too many failed login attempts. Please wait and try again.');
   }
 }
+async storePaymentDetails(
+  razorpayPaymentId: string,
+  razorpayOrderId: string,
+  razorpaySignature: string,
+  email: string,
+  amount: number,
+) {
+  return this.prisma.payment.create({
+    data: {
+      razorpayPaymentId,
+      razorpayOrderId,
+      razorpaySignature,
+      email,
+      amount,
+    },
+  });
+}
 
 //confirmation order
   async confirmOrder(dto: CreateOrderDto) {
@@ -81,11 +98,11 @@ private async getShiprocketToken(): Promise<string> {
 });
 
 
-    const token = await this.getShiprocketToken();
+   // const token = await this.getShiprocketToken();
 
 
 
-    console.log({token})
+   // console.log({token})
 
 //   const payload = {
 //   order_id: savedOrder.id,
@@ -142,73 +159,73 @@ private async getShiprocketToken(): Promise<string> {
 //   weight: 2.5
 // };
 
-const payload = {
-  "order_id": Math.random().toString().split(".").join(''),
-  "order_date": "2019-07-24 11:11",
-  "pickup_location": "Jammu",
-  "comment": "Reseller: M/s Goku",
-  "billing_customer_name": "Naruto",
-  "billing_last_name": "Uzumaki",
-  "billing_address": "House 221B, Leaf Village",
-  "billing_address_2": "Near Hokage House",
-  "billing_city": "New Delhi",
-  "billing_pincode": 110002,
-  "billing_state": "Delhi",
-  "billing_country": "India",
-  "billing_email": "naruto@uzumaki.com",
-  "billing_phone": 9876543210,
-  "shipping_is_billing": true,
-  "shipping_customer_name": "Naruto",
-  "shipping_last_name": "Uzumaki",
-  "shipping_address": "House 221B, Leaf Village",
-  "shipping_address_2": "Near Hokage House",
-  "shipping_city": "New Delhi",
-  "shipping_pincode": 110002,
-  "shipping_country": "India",
-  "shipping_state": "Delhi",
-  "shipping_email": "naruto@uzumaki.com",
-  "shipping_phone": 9876543210,
-  "order_items": [
-    {
-      "name": "Kunai",
-      "sku": "chakra123",
-      "units": 10,
-      "selling_price": 900,
-      "discount": "",
-      "tax": "",
-      "hsn": 441122
-    }
-  ],
-  "payment_method": "Prepaid",
-  "shipping_charges": 0,
-  "giftwrap_charges": 0,
-  "transaction_charges": 0,
-  "total_discount": 0,
-  "sub_total": 9000,
-  "length": 10,
-  "breadth": 15,
-  "height": 20,
-  "weight": 2.5
-}
+// const payload = {
+//   "order_id": Math.random().toString().split(".").join(''),
+//   "order_date": "2019-07-24 11:11",
+//   "pickup_location": "Jammu",
+//   "comment": "Reseller: M/s Goku",
+//   "billing_customer_name": "Naruto",
+//   "billing_last_name": "Uzumaki",
+//   "billing_address": "House 221B, Leaf Village",
+//   "billing_address_2": "Near Hokage House",
+//   "billing_city": "New Delhi",
+//   "billing_pincode": 110002,
+//   "billing_state": "Delhi",
+//   "billing_country": "India",
+//   "billing_email": "naruto@uzumaki.com",
+//   "billing_phone": 9876543210,
+//   "shipping_is_billing": true,
+//   "shipping_customer_name": "Naruto",
+//   "shipping_last_name": "Uzumaki",
+//   "shipping_address": "House 221B, Leaf Village",
+//   "shipping_address_2": "Near Hokage House",
+//   "shipping_city": "New Delhi",
+//   "shipping_pincode": 110002,
+//   "shipping_country": "India",
+//   "shipping_state": "Delhi",
+//   "shipping_email": "naruto@uzumaki.com",
+//   "shipping_phone": 9876543210,
+//   "order_items": [
+//     {
+//       "name": "Kunai",
+//       "sku": "chakra123",
+//       "units": 10,
+//       "selling_price": 900,
+//       "discount": "",
+//       "tax": "",
+//       "hsn": 441122
+//     }
+//   ],
+//   "payment_method": "Prepaid",
+//   "shipping_charges": 0,
+//   "giftwrap_charges": 0,
+//   "transaction_charges": 0,
+//   "total_discount": 0,
+//   "sub_total": 9000,
+//   "length": 10,
+//   "breadth": 15,
+//   "height": 20,
+//   "weight": 2.5
+// }
 
-console.log({payload})
+//console.log({payload})
 
 // console.log("Hi")
 
-const data = JSON.stringify(payload)
+//const data = JSON.stringify(payload)
 
-var config = {
-  method: 'post',
-maxBodyLength: Infinity,
-  url: 'https://apiv2.shiprocket.in/v1/external/orders/create/adhoc',
-  headers: { 
-    'Content-Type': 'application/json', 
-    'Authorization': `Bearer ${token}`
-  },
-  data : data
-};
+// var config = {
+//   method: 'post',
+// maxBodyLength: Infinity,
+//   url: 'https://apiv2.shiprocket.in/v1/external/orders/create/adhoc',
+//   headers: { 
+//     'Content-Type': 'application/json', 
+//     'Authorization': `Bearer ${token}`
+//   },
+//   data : data
+// };
 
-await axios(config)
+//await axios(config)
 
 // await axios.post(
 //   'https://apiv2.shiprocket.in/v1/external/orders/create/adhoc',

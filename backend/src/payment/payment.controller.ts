@@ -49,4 +49,33 @@ export class PaymentController {
   async confirmOrder(@Body() dto:CreateOrderDto){
     return this.paymentService.confirmOrder(dto);
   }
+  @Post('verify')
+async verifyPayment(@Body() body: any) {
+  const {
+    razorpayPaymentId,
+    razorpayOrderId,
+    razorpaySignature,
+    email,
+    amount,
+    address,
+  } = body;
+
+  // Store payment
+  await this.paymentService.storePaymentDetails(
+    razorpayPaymentId,
+    razorpayOrderId,
+    razorpaySignature,
+    email,
+    amount,
+  );
+
+  // Save order in DB
+  await this.paymentService.confirmOrder({
+    razorpayPaymentId,
+    address,
+  });
+
+  return { success: true };
+}
+
 }
