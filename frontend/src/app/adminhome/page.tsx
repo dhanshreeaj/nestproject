@@ -14,6 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
+import Link from "next/link";
 
 interface User {
   id: string;
@@ -118,15 +119,35 @@ export default function AdminHome() {
           <Typography variant="h4" fontWeight="bold">
             Admin Dashboard
           </Typography>
-          <Button
-            variant="contained"
-            onClick={fetchUsers}
-            sx={{ mb: 3, bgcolor: "black", color: "white" }}
-          >
-            {showUsers ? "Hide Users" : "View Users"}
-          </Button>
-          <br />
+          <Box display="flex" gap={2} mb={3}>
+            <Button
+              variant="contained"
+              onClick={fetchUsers}
+              sx={{ mb: 3, bgcolor: "black", color: "white" }}
+            >
+              {showUsers ? "Hide Users" : "View Users"}
+            </Button>
+            <br />
 
+            <Button
+              variant="contained"
+              onClick={fetchPayments}
+              sx={{ mb: 3, bgcolor: "black", color: "white" }}
+            >
+              {showPayments ? "Hide payments" : "View Payments"}
+            </Button>
+            <br />
+            <Link href={"/addproducts"}>
+              <Button
+                variant="contained"
+                sx={{ mb: 3, bgcolor: "black", color: "white" }}
+              >
+                Products
+              </Button>
+            </Link>
+          </Box>
+
+          {/* show users detail */}
           {showUsers && (
             <TableContainer
               component={Paper}
@@ -226,50 +247,46 @@ export default function AdminHome() {
               </Table>
             </TableContainer>
           )}
-          <Button
-            variant="contained"
-            onClick={fetchPayments}
-            sx={{ mb: 3, bgcolor: "black", color: "white" }}
-          >
-            {showPayments ? "Hide payments" : "View Payments"}
-          </Button>
 
+          {/* show payment details */}
           {showPayments && (
             <TableContainer component={Paper}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>
-                      <strong>Order ID</strong>
-                    </TableCell>
-                    <TableCell>
-                      <strong>Payment ID</strong>
-                    </TableCell>
-                    <TableCell>
-                      <strong>Email</strong>
-                    </TableCell>
-                    <TableCell>
-                      <strong>Amount</strong>
-                    </TableCell>
-                    <TableCell>
-                      <strong>Date</strong>
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {payments.map((payment) => (
-                    <TableRow key={payment.id}>
-                      <TableCell>{payment.razorpayOrderId}</TableCell>
-                      <TableCell>{payment.razorpayPaymentId}</TableCell>
-                      <TableCell>{payment.email}</TableCell>
-                      <TableCell>{payment.amount}</TableCell>
+              <div>
+                <Table>
+                  <TableHead>
+                    <TableRow>
                       <TableCell>
-                        {new Date(payment.createdAt).toLocaleString()}
+                        <strong>Order ID</strong>
+                      </TableCell>
+                      <TableCell>
+                        <strong>Payment ID</strong>
+                      </TableCell>
+                      <TableCell>
+                        <strong>Email</strong>
+                      </TableCell>
+                      <TableCell>
+                        <strong>Amount</strong>
+                      </TableCell>
+                      <TableCell>
+                        <strong>Date</strong>
                       </TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHead>
+                  <TableBody>
+                    {payments.map((payment) => (
+                      <TableRow key={payment.id}>
+                        <TableCell>{payment.razorpayOrderId}</TableCell>
+                        <TableCell>{payment.razorpayPaymentId}</TableCell>
+                        <TableCell>{payment.email}</TableCell>
+                        <TableCell>{payment.amount}</TableCell>
+                        <TableCell>
+                          {new Date(payment.createdAt).toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </TableContainer>
           )}
         </Container>
