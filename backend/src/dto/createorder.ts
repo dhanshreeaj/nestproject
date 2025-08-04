@@ -1,6 +1,6 @@
 interface AddressDto {
   name: string;
-  lastName:string;
+  lastName: string;
   address1: string;
   city: string;
   postalCode: string;
