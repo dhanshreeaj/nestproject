@@ -318,13 +318,16 @@ export default function ProductPage() {
               <CardMedia
                 component="img"
                 height="140"
-                //image={product.imageUrl}
+                // image={
+                //   product.imageUrl?.startsWith("http")
+                //     ? product.imageUrl
+                //     : `http://localhost:3001${product.imageUrl}`
+                // }
                 image={
                   product.imageUrl || product.imageUrl?.startsWith("http")
                     ? product.imageUrl
                     : `http://localhost:3001${product.imageUrl}`
                 }
-                // image={`http://localhost:3001${product.imageUrl}`}
                 alt={product.name}
                 sx={{ height: 140, objectFit: "contain", mb: 1 }}
               />

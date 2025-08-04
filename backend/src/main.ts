@@ -23,14 +23,14 @@ async function bootstrap() {
     origin: 'http://localhost:3000',
     credentials: true,
   });
-  // app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
-  // app.use(urlencoded({ extended: false }));
-  // app.useStaticAssets(join(__dirname, '..', 'uploads'), {
-  //  prefix: '/uploads/',
-  //  });
+  app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
+  app.use(urlencoded({ extended: false }));
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
     prefix: '/uploads/',
   });
+  // app.useStaticAssets(join(__dirname, '..', 'uploads'), {
+  //   prefix: '/uploads/',
+  // });
 
   // Raw body for Razorpay webhook
   app.use(
