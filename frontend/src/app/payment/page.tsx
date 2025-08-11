@@ -4,7 +4,7 @@ import { Box, Button, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import Script from "next/script";
 import { useState } from "react";
-
+import { useRouter } from "next/navigation";
 declare global {
   interface Window {
     Razorpay: new (options: RazorpayOptions) => RazorpayInstance;
@@ -38,6 +38,8 @@ interface RazorpayInstance {
 }
 
 export default function Payment() {
+  const router = useRouter();
+
   const [form, setForm] = useState({
     name: "",
     lastName: "",
@@ -75,7 +77,14 @@ export default function Payment() {
   //   }
   // }
 
+  const isFormValid = () => {
+    return Object.values(form).every((val) => val.trim() !== "");
+  };
   const handlePayment = async () => {
+    if (!isFormValid()) {
+      alert("Please fill all details");
+      return;
+    }
     //return confirmOrderAndDeliver();
 
     const { data: order } = await axios.post(
@@ -86,7 +95,7 @@ export default function Payment() {
     );
 
     const options = {
-      key: "rzp_test_65gklXAz8r96kp", // your Razorpay test key
+      key: "rzp_test_65gklXAz8r96kp", // Razorpay test key
       amount: order.amount,
       currency: "INR",
       name: "Stallion",
@@ -108,6 +117,7 @@ export default function Payment() {
           });
 
           alert("Payment successful: " + response.razorpay_payment_id);
+          router.push("/home");
         } catch (error) {
           if (axios.isAxiosError(error)) {
             console.error(
@@ -148,63 +158,18 @@ export default function Payment() {
         }}
       >
         <Typography variant="h6">Order Process</Typography>
-        <TextField
-          label="Name"
-          name="name"
-          value={form.name}
-          onChange={handleChange}
-        />
-        <TextField
-          label="Last Name"
-          name="lastName"
-          value={form.lastName}
-          onChange={handleChange}
-        />
-        <TextField
-          label="Address"
-          name="address1"
-          value={form.address1}
-          onChange={handleChange}
-        />
-        <TextField
-          label="City"
-          name="city"
-          value={form.city}
-          onChange={handleChange}
-        />
-        <TextField
-          label="Postal Code"
-          name="postalCode"
-          value={form.postalCode}
-          onChange={handleChange}
-        />
-        <TextField
-          label="Country"
-          name="country"
-          value={form.country}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              country:
-                e.target.value.trim().toLowerCase() === "india"
-                  ? "India"
-                  : e.target.value,
-            })
-          }
-        />
-        <TextField
-          label="Phone"
-          name="phone"
-          value={form.phone}
-          onChange={handleChange}
-        />
-        <TextField
-          label="Email"
-          name="email"
-          value={form.email}
-          onChange={handleChange}
-        />
-
+        {Object.keys(form).map((field) => (
+          <TextField
+            key={field}
+            label={field
+              .replace(/([A-Z])/g, "$1")
+              .replace(/^./, (str) => str.toUpperCase())}
+            name={field}
+            value={(form as any)[field]}
+            onChange={handleChange}
+            required
+          />
+        ))}
         <Button
           sx={{ bgcolor: "grey", color: "black" }}
           onClick={handlePayment}
