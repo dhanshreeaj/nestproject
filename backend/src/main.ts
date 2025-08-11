@@ -20,7 +20,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', 'https://www.stalliongrooming.com'],
     credentials: true,
   });
   app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
@@ -45,6 +45,9 @@ async function bootstrap() {
   // Normal JSON parsing for other routes
   app.use(json());
 
-  await app.listen(3001);
+  // await app.listen(3001);
+  app.listen(3001, '0.0.0.0', () => {
+    console.log('Server running on port 3001');
+  });
 }
 bootstrap();

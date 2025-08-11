@@ -84,9 +84,14 @@ export default function Home() {
   }, []);
 
   const [products, setProducts] = useState<Product[]>([]);
+  const API_BASE_URL =
+    process.env.NODE_ENV === "production"
+      ? "https://api.stalliongrooming.com"
+      : "http://localhost:3001";
+
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("http://localhost:3001/products");
+      const res = await axios.get(`${API_BASE_URL}/products`);
 
       setProducts(res.data);
     } catch (error) {
