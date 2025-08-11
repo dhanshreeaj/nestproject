@@ -19,19 +19,19 @@ import { Express } from 'express';
 
 @Controller('products')
 export class ProductController {
-  constructor(private readonly productSerive: ProductService) {}
+  constructor(private readonly productService: ProductService) {}
   @Post()
   create(@Body() data: CreateProductDto) {
-    return this.productSerive.create(data);
+    return this.productService.create(data);
   }
 
   @Get()
   findAll() {
-    return this.productSerive.findAll();
+    return this.productService.findAll();
   }
   @Delete(':id')
   deleteProduct(@Param('id') id: string) {
-    return this.productSerive.deleteProduct(+id);
+    return this.productService.deleteProduct(+id);
   }
   @Post(':id')
   @UseInterceptors(
@@ -58,7 +58,7 @@ export class ProductController {
     if (file) {
       updateDate.imageUrl = `/uploads/${file.filename}`;
     }
-    return this.productSerive.updateProduct(+id, updateDate);
+    return this.productService.updateProduct(+id, updateDate);
   }
   // updateProduct(@Param('id') id: string, @Body() data: Partial<Product>) {
   //   return this.productSerive.updateProduct(+id, data);
